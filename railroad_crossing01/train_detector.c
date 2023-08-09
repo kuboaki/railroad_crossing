@@ -35,6 +35,6 @@ bool train_detector_is_detected(void) {
     return distance < train_detector_threshold;
 }
 void detector_init(void) {
-    ev3_sensor_config(detector_sensor_C, detector_sensor_type);
+    ev3_sensor_config(train_detector_sensor_port, train_detector_sensor_type);
 
 }
