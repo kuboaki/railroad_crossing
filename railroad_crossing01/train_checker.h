@@ -7,6 +7,9 @@
 
 extern void train_checker_init(void);
 extern void train_checker_set_threshold(int threshold);
-extern bool train_checker_is_detected(void);
+extern void train_checker_set_to_current_A(void);
+extern void train_checker_set_to_current_B(void);
+extern bool train_checker_is_detected_A(void);
+extern bool train_checker_is_detected_B(void);
 
 #endif // TRAIN_CHECKER_H_

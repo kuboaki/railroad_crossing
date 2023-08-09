@@ -143,7 +143,7 @@ void main_task(intptr_t unused) {
         if(t_is_entry) {
             t_is_entry = false;
             ev3_led_set_color(LED_ORANGE);
-            gate_rotator_rotate_reverse();
+            gate_frotator_rotate_reverse();
             // horn_warning();
             timer_start(2000U*1000U);
         }

@@ -22,3 +22,26 @@ void horn_confirmation(void) {
     dly_tsk(duration * 3);
     ev3_speaker_stop();
 }
+
+void horn_at_A(void) {
+    const int duration = 100U * 1000U;
+    ev3_speaker_set_volume(10);
+
+    ev3_speaker_play_tone(NOTE_E4, duration); /* ミ */
+    dly_tsk(duration * 2);
+    ev3_speaker_play_tone(NOTE_G4, duration); /* ソ */
+    dly_tsk(duration * 2);    
+    ev3_speaker_stop();
+}
+
+void horn_at_B(void) {
+    const int duration = 100U * 1000U;
+    ev3_speaker_set_volume(10);
+
+    ev3_speaker_play_tone(NOTE_G4, duration); /* ソ */
+    dly_tsk(duration * 2);
+    ev3_speaker_play_tone(NOTE_E4, duration); /* ミ */
+    dly_tsk(duration * 2);    
+    ev3_speaker_stop();
+}
+

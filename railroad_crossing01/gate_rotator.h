@@ -8,10 +8,10 @@
 #include "stdbool.h"
 #include "util.h"
 
-extern void rotator_init(void);
+extern void gate_rotator_init(void);
 
-extern void rotator_rotate_normal(void);
-extern void rotator_rotate_reverse(void);
-extern void rotator_stop(void);
+extern void gate_rotator_rotate_normal(void);
+extern void gate_rotator_rotate_reverse(void);
+extern void gate_rotator_stop(void);
 
 #endif // ROTATOR_H_

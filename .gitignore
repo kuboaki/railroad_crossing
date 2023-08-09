@@ -1,3 +1,10 @@
+\#*\#
+\.\#*
+*~
+*.tmp
+vendor/bundle
+log
+
 # Prerequisites
 *.d
 
