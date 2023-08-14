@@ -2,7 +2,7 @@
 
 # STAMP/STPAシミュレーションのための踏切モデル
 
-このリポジトリには、LEGO MINDSTORMS EV3のキットと追加のLEGOブロックで製作した踏切の組立図とプログラムを提供します。LEGO City Trainの列車と一緒に動かします。
+このリポジトリでは、LEGO MINDSTORMS EV3のキットと追加のLEGOブロックで製作した踏切の組立図とプログラムを提供します。LEGO City Trainの列車と一緒に動かします（EV3_Train https://github.com/kuboaki/ev3_train と一緒でもよいでしょう）。
 
 ## 製作の動機
 
