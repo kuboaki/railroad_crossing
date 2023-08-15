@@ -1,4 +1,4 @@
-[English](README.adoc[]) | [日本語](README_ja.adoc[])
+[English]("README.adoc[]") | [日本語]("README_ja.adoc[]")
 
 = Railroad Crossing Model for STAMP/STPA Simulation
 
