@@ -1,8 +1,8 @@
 //
-//  gate_rotator.c
+//  lamp.c
 //
 
-#include "gate_rotator.h"
+#include "lamp.h"
 
 static const motor_port_t motor_port1 = EV3_PORT_A;
 static const motor_port_t motor_port2 = EV3_PORT_B;
