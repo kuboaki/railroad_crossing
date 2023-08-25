@@ -43,12 +43,14 @@ bool train_checker_is_detected(sensor_port_t port) {
 
     if(port == train_checker_sensor_A) {
         if( chk_old_A != chk ) {
-        fmt_f("chk_A = %d", chk, 3);
+          fmt_f("chk_A = %d", chk, 3);
+          chk_old_A = chk;
         return chk > train_checker_threshold_A;
         }
     } else if(port == train_checker_sensor_B) {
         if( chk_old_B != chk ) {
-        fmt_f("chk_B = %d", chk, 4);
+          fmt_f("chk_B = %d", chk, 4);
+          chk_old_B = chk;
         return chk > train_checker_threshold_B;
         }
     }
