@@ -15,7 +15,7 @@ typedef enum _rotator_state {
 
 static char* state_msg[TNUM_ROTATOR_STATE] = {
     "RS_INIT",
-    "RS_OPEND", "RS_CLOSING",
+    "RS_OPENED", "RS_CLOSING",
     "RS_CLOSED", "RS_OPENING"
 };
 
@@ -39,26 +39,26 @@ static int16_t rotator_power = ROTATOR_POWER;
 static int16_t gate1_count = 0;
 static int16_t gate2_count = 0;
 
-typedef enum _rotator_go_direction_type {
-    RD_GO_CLOSING, RD_GO_OPENING
-} rotator_go_direction_type;
+typedef enum _rotator_oparation_request_type {
+    RO_REQ_CLOSING, RO_REQ_OPENING
+} rotator_oparation_request_type;
 
-static rotator_go_direction_type go_direction = RD_GO_CLOSING;
+static rotator_oparation_request_type ro_request = RO_REQ_CLOSING;
 
-void gate_rotator_go_opening(void) {
-    go_direction = RD_GO_OPENING;
+void gate_rotator_close_gate(void) {
+    ro_request = RO_REQ_CLOSING;
 }
 
-void gate_rotator_go_closing(void) {
-    go_direction = RD_GO_CLOSING;
-}
-
-static bool gate_rotator_got_open_request(void) {
-    return go_direction == RD_GO_OPENING;
+void gate_rotator_open_gate(void) {
+    ro_request = RO_REQ_OPENING;
 }
 
 static bool gate_rotator_got_close_request(void) {
-    return go_direction == RD_GO_CLOSING;
+    return ro_request == RO_REQ_CLOSING;
+}
+
+static bool gate_rotator_got_open_request(void) {
+    return  ro_request == RO_REQ_OPENING;
 }
 
 void gate_rotator_init(void) {
@@ -71,17 +71,24 @@ void gate_rotator_init(void) {
 }
 
 void gate_rotator_rotate_normal(void) {
-    ev3_motor_set_power(gate1_port, rotator_power);
-    ev3_motor_set_power(gate2_port, rotator_power);
+    if(gate1_count < ROTATOR_COUNT && gate2_count < ROTATOR_COUNT) {
+        ev3_motor_set_power(gate1_port, rotator_power);
+        ev3_motor_set_power(gate2_port, rotator_power);
+    } else {
+        gate_rotator_stop();
+    }
 
     /* ev3_motor_rotate(motor_port1, rotator_degree, rotator_speed, false); */
     /* ev3_motor_rotate(motor_port2, rotator_degree, rotator_speed, false); */
 }
 
 void gate_rotator_rotate_reverse(void) {
-    ev3_motor_set_power(gate1_port, -rotator_power);
-    ev3_motor_set_power(gate2_port, -rotator_power);
-
+    if(gate1_count > 0 && gate2_count > 0) {
+        ev3_motor_set_power(gate1_port, -rotator_power);
+        ev3_motor_set_power(gate2_port, -rotator_power);
+    } else {
+        gate_rotator_stop();
+    }
     /* ev3_motor_rotate(motor_port1, -rotator_degree, rotator_speed, false); */
     /* ev3_motor_rotate(motor_port2, -rotator_degree, rotator_speed, false); */
 }
@@ -96,7 +103,7 @@ void gate_rotator_update_counts(void) {
     gate2_count = ev3_motor_get_counts(gate2_port);
 }
 
-bool gate_rotator_is_closed(void) {
+bool gate_rotator_is_gate_closed(void) {
     if(gate1_count >= ROTATOR_COUNT
        || gate2_count >= ROTATOR_COUNT) {
         return true;
@@ -104,7 +111,7 @@ bool gate_rotator_is_closed(void) {
     return false;
 }
 
-bool gate_rotator_is_opened(void) {
+bool gate_rotator_is_gate_opened(void) {
     if(gate1_count <= 0 || gate2_count <= 0 ) {
         return true;
     }
@@ -135,7 +142,7 @@ void gate_rotator_run(void) {
         ENTRY
             gate_rotator_rotate_normal();
         DO
-        EVTCHK(gate_rotator_is_closed(),RS_CLOSED)
+        EVTCHK(gate_rotator_is_gate_closed(),RS_CLOSED)
         EXIT
             gate_rotator_stop();
         END
@@ -151,7 +158,7 @@ void gate_rotator_run(void) {
         ENTRY
             gate_rotator_rotate_reverse();
         DO
-        EVTCHK(gate_rotator_is_opened(),RS_OPENED)
+        EVTCHK(gate_rotator_is_gate_opened(),RS_OPENED)
         EXIT
             gate_rotator_stop();
         END

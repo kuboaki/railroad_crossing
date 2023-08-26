@@ -8,8 +8,8 @@
 #include "stdbool.h"
 #include "util.h"
 
-extern void gate_rotator_go_opening(void);
-extern void gate_rotator_go_closing(void);
+extern void gate_rotator_open_gate(void);
+extern void gate_rotator_close_gate(void);
 extern void gate_rotator_init(void);
 extern void gate_rotator_stop(void);
 extern void gate_rotator_run(void);

@@ -35,7 +35,7 @@ void train_checker_init(void) {
     ev3_sensor_config(train_checker_sensor_B, train_checker_sensor_type);
 }
 
-// 通過していないときの値を設定し、通過中はそれより大きい値か調べる
+// しきい値と比較して、通過中はそれより大きい値か調べる
 bool train_checker_is_detected(sensor_port_t port) {
     static int8_t chk_old_A = 255;
     static int8_t chk_old_B = 255;

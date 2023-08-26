@@ -36,6 +36,8 @@ void railroad_crossing_init(void) {
 #define MY_TIMER_ID 0
 
 void railroad_crossing_run(void) {
+    gate_rotator_run();
+
     if(rc_is_entry) { msg_f(rc_state_msg[rc_state], 2); }
 
     switch(rc_state) {
@@ -78,7 +80,7 @@ void railroad_crossing_run(void) {
     case RC_TO_CLOSE:
         ENTRY
             ev3_led_set_color(LED_ORANGE);
-            gate_rotator_go_opening();
+            gate_rotator_open_gate();
             // horn_warning();
             timer_start(MY_TIMER_ID,300U*1000U);
         DO
@@ -116,7 +118,7 @@ void railroad_crossing_run(void) {
     case RC_TO_OPEN:
         ENTRY
             ev3_led_set_color(LED_ORANGE);
-            gate_rotator_go_closing();
+            gate_rotator_close_gate();
             // horn_warning();
             timer_start(MY_TIMER_ID, 2000U*1000U);
         DO
