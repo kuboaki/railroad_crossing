@@ -4,6 +4,8 @@
 *.tmp
 vendor/bundle
 log
+*.bak
+*.lock
 
 # Prerequisites
 *.d
