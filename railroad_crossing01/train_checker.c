@@ -45,15 +45,24 @@ bool train_checker_is_detected(sensor_port_t port) {
         if( chk_old_A != chk ) {
             fmt_f("chk_A = %d", chk, 3);
             chk_old_A = chk;
+#ifdef TARGET_REAL
+            return chk > train_checker_threshold_A;
+#else
             return chk < train_checker_threshold_A;
+#endif
         }
     } else if(port == train_checker_sensor_B) {
         if( chk_old_B != chk ) {
             fmt_f("chk_B = %d", chk, 4);
             chk_old_B = chk;
+#ifdef TARGET_REAL
             return chk > train_checker_threshold_B;
+#else
+            return chk < train_checker_threshold_B;
+#endif
         }
     }
+
     return false;
 }
 

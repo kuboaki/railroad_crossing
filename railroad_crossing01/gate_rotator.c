@@ -73,7 +73,9 @@ void gate_rotator_init(void) {
 }
 
 void gate_rotator_rotate_normal(void) {
-    if(gate1_count < ROTATOR_COUNT && gate2_count < ROTATOR_COUNT) {
+    // if(gate1_count < ROTATOR_COUNT && gate2_count < ROTATOR_COUNT) {
+    // if(gate1_count < ROTATOR_COUNT || gate2_count < ROTATOR_COUNT) {
+    if(gate1_count < ROTATOR_COUNT) {
         ev3_motor_set_power(gate1_port, rotator_power);
         ev3_motor_set_power(gate2_port, rotator_power);
     } else {
@@ -85,7 +87,9 @@ void gate_rotator_rotate_normal(void) {
 }
 
 void gate_rotator_rotate_reverse(void) {
-    if(gate1_count > 0 && gate2_count > 0) {
+    // if(gate1_count > 0 && gate2_count > 0) {
+    // if(gate1_count > 0 || gate2_count > 0) {
+    if(gate1_count > 0) {
         ev3_motor_set_power(gate1_port, -rotator_power);
         ev3_motor_set_power(gate2_port, -rotator_power);
     } else {
