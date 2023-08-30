@@ -36,7 +36,7 @@ void train_checker_init(void) {
 }
 
 // しきい値と比較して、通過中はそれより大きい値か調べる
-bool train_checker_is_detected(sensor_port_t port) {
+bool train_checker_is_detected_x(sensor_port_t port) {
     static uint8_t chk_old_A = 255;
     static uint8_t chk_old_B = 255;
     uint8_t chk = ev3_color_sensor_get_reflect(port);
@@ -67,8 +67,14 @@ bool train_checker_is_detected(sensor_port_t port) {
 }
 
 bool train_checker_is_detected_A(void) {
-    return train_checker_is_detected(train_checker_sensor_A);
+    return train_checker_is_detected_x(train_checker_sensor_A);
 }
 bool train_checker_is_detected_B(void) {
-    return train_checker_is_detected(train_checker_sensor_B);
+    return train_checker_is_detected_x(train_checker_sensor_B);
 }
+
+bool train_checker_is_detected(void) {
+    return train_checker_is_detected_A()
+        || train_checker_is_detected_B();
+}
+
