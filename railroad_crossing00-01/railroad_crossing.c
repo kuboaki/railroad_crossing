@@ -3,17 +3,19 @@
 #include "railroad_crossing.h"
 
 typedef enum _railroad_crossing_state {
-    RC_INIT, RC_WAIT_FOR_OPEN,
-    RC_OPENED,  RC_OPEN2, RC_TO_OPEN,
-    RC_CLOSED, RC_CLOSE2, RC_CLOSE3,
-    RC_TO_CLOSE, TNUM_RC_STATE
+    RC_INIT,
+    RC_WAIT_FOR_OPEN_A, RC_WAIT_FOR_OPEN_B,
+    RC_OPENED, RC_TO_OPEN,
+    RC_CLOSED_A, RC_CLOSED_B,
+    RC_TO_CLOSE_A, RC_TO_CLOSE_B, TNUM_RC_STATE
 } railroad_crossing_state;
 
 static char* rc_state_msg[TNUM_RC_STATE] = {
-    "RC_INIT", "RC_WAIT_FOR_OPEN",
-    "RC_OPENED",  "RC_OPEN2", "RC_TO_OPEN",
-    "RC_CLOSED", "RC_CLOSE2", "RC_CLOSE3",
-    "RC_TO_CLOSE"
+    "RC_INIT",
+    "RC_WAIT_FOR_OPEN_A", "RC_WAIT_FOR_OPEN_B",
+    "RC_OPENED", "RC_TO_OPEN",
+    "RC_CLOSED_A", "RC_CLOSED_B",
+    "RC_TO_CLOSE_A", "RC_TO_CLOSE_B"
 };
 
 static railroad_crossing_state rc_state = RC_INIT;
@@ -59,82 +61,76 @@ void railroad_crossing_run(void) {
             ev3_led_set_color(LED_GREEN);
             horn_confirmation();
         DO
-        EVTCHK(manual_switch_is_pushed(),RC_OPEN2)
-        EVTCHK(train_checker_is_detected_A(),RC_TO_CLOSE)
-        EVTCHK(train_checker_is_detected_B(),RC_TO_CLOSE)
+        EVTCHK(train_checker_is_detected_A(),RC_TO_CLOSE_A)
+        EVTCHK(train_checker_is_detected_B(),RC_TO_CLOSE_B)
         EXIT
+        END
+        break;
+    case RC_TO_CLOSE_A:
+        ENTRY
             horn_at_A();
-        END
-        break;
-    case RC_OPEN2:
-        ENTRY
             ev3_led_set_color(LED_ORANGE);
+            train_checker_mask_B();
+            gate_rotator_go_closing();
+            // warning_light_flashing();
         DO
-        EVTCHK((!manual_switch_is_pushed()),RC_TO_CLOSE)
+        EVTCHK(gate_rotator_is_closed(),RC_CLOSED_A)
         EXIT
+            // timer_stop(rc_timer_id);
         END
         break;
-    case RC_TO_CLOSE:
+    case RC_TO_CLOSE_B:
         ENTRY
+            horn_at_B();
             ev3_led_set_color(LED_ORANGE);
+            train_checker_mask_A();
             gate_rotator_go_closing();
             // warning_light_flashing();
             // timer_start(rc_timer_id,500U*1000U);
         DO
         // EVTCHK(timer_is_timedout(rc_timer_id),RC_CLOSED)
-        EVTCHK(gate_rotator_is_closed(),RC_CLOSED)
+        EVTCHK(gate_rotator_is_closed(),RC_CLOSED_B)
         EXIT
             // timer_stop(rc_timer_id);
         END
         break;
-    case RC_CLOSED:
+    case RC_CLOSED_A:
         ENTRY
             ev3_led_set_color(LED_RED);
             horn_warning();
         DO
-        EVTCHK(manual_switch_is_pushed(),RC_CLOSE3)
-        EVTCHK(train_detector_is_detected(),RC_CLOSE2)
+        EVTCHK(train_checker_is_detected_B(),RC_WAIT_FOR_OPEN_A)
         EXIT
         END
         break;
-    case RC_CLOSE3:
+    case RC_CLOSED_B:
         ENTRY
-            ev3_led_set_color(LED_ORANGE);
+            ev3_led_set_color(LED_RED);
+            horn_warning();
         DO
-        EVTCHK((!manual_switch_is_pushed()),RC_TO_OPEN)
+        EVTCHK(train_checker_is_detected_A(),RC_WAIT_FOR_OPEN_B)
         EXIT
         END
         break;
-    case RC_CLOSE2:
+    case RC_WAIT_FOR_OPEN_A:
         ENTRY
-            ev3_led_set_color(LED_ORANGE);
-        DO
-        EVTCHK((!train_detector_is_detected()),RC_WAIT_FOR_OPEN)
-        EXIT
-        END
-        break;
-    case RC_WAIT_FOR_OPEN:
-        ENTRY
-            timer_start(rc_timer_id,500U*1000U);
+            timer_start(rc_timer_id,2000U*1000U);
         DO
         EVTCHK(timer_is_timedout(rc_timer_id),RC_TO_OPEN)
         EXIT
+            timer_stop(rc_timer_id);
         END
         break;
 case RC_TO_OPEN:
         ENTRY
             ev3_led_set_color(LED_ORANGE);
             gate_rotator_go_opening();
+            train_checker_unmask();
             // warning_light_off();
-            // timer_start(rc_timer_id, 2000U*1000U);
         DO
-        // if(train_checker_is_detected_B()
-        //   || timer_is_timedout(rc_timer_id)) {
-        // EVTCHK(timer_is_timedout(rc_timer_id),RC_OPENED)
-        EVTCHK(gate_rotator_is_opened(),RC_OPENED)
+        EVTCHK(timer_is_timedout(rc_timer_id),RC_TO_OPEN)
         EXIT
             // timer_stop(rc_timer_id);
-            horn_at_B();
         END
         break;
     case TNUM_RC_STATE:

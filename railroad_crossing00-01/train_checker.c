@@ -78,3 +78,11 @@ bool train_checker_is_detected(void) {
         || train_checker_is_detected_B();
 }
 
+void train_checker_mask_A(void) {
+}
+
+void train_checker_mask_B(void) {
+}
+
+void train_checker_unmask(void) {
+}
